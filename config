@@ -1,0 +1,78 @@
+#!/bin/bash
+###########################################################################
+# Lista de variables a editar por el usuario
+###########################################################################
+
+###########################################################################
+# Directorios
+# ( no incluír "/" al final )
+
+BASEDIR=/root
+TMPDIR=/tmp
+
+# Paginas html
+INSTALLDIR=/home/httpd/free-vote
+
+# URL desde el que se accede a dichas paginas via Web
+WEBURL=http://drake.dit.upm.es/free-vote
+
+# Ficheros ejecutables
+BINDIR=/root/bin
+
+# Informes y backups
+LOGDIR=/root/.e-vote
+BACKUPDIR=/root/.e-vote
+
+
+###########################################################################
+# datos de configuracion
+
+# Selecciona 1 o 0 en funcion de si se desea protocolo seguro o no
+USE_HTTPS=0
+
+# Nivel de verbosidad en los logs
+#
+# 0->verbose	( todo )
+# 1->info 	( informacion adicional )
+# 2->notice 	( operacion normal )
+# 3->warning 	( temas que requieren atencion )
+# 4->error      ( errores del sistema )
+LOG_AUTH=2		# autentificacion de usuarios
+LOG_ADMIN=3		# operaciones de administracion
+LOG_ACCESS=3		# registro de accesos al web
+LOG_VOTE=1		# operaciones de voto y solicitud de clave
+LOG_REGISTRY=2		# registro de usuarios y consultas
+
+###########################################################################
+# Informacion sobre la base de datos
+
+# debido a un bug en el programa pg_dump es necesario incluir 
+# la variable DBPASSWD en texto pleno en el fichero de configuracion. 
+# pendiente de corregir. En cualquier caso sólo es necesario para el
+# script de backup de la database
+
+DB_PROGRAM=postgresql
+
+DBTITLE="E-Consultas ACME"
+DBNAME=evote
+DBUSER=operador
+DBPASSWD=rodarepo
+DBHOST=localhost
+DBPORT=5432
+
+###########################################################################
+# Datos del administrador de la database
+
+# Nombre y apellidos o razon social
+ADMIN_FIRSTNAME="Juan Antonio"
+ADMIN_LASTNAME="Martínez Castaño"
+
+# Direccion, telefono y correco electronico
+ADMIN_ADDRESS="E.T.S.I.Telecomunicacion, Madrid"
+ADMIN_PHONE="+34 91 3367366 416"
+ADMIN_EMAIL="jonsito@teleline.es"
+
+# Numero de registro en la Agencia de Proteccion de Datos
+ADMIN_APD="( En trámite )"
+
+###########################################################################

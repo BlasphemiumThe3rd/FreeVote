@@ -1,0 +1,182 @@
+   Free-Vote: Un sistema de Voto Electrónico
+
+------------------------------------------------------------------------
+Este programa, su código y documentación, son Copyright © 2000 de 
+Juan Antonio Martínez Castaño
+
+Free-Vote es distribuído bajo los términos y condiciones de la 
+Licencia Pública General de GNU (GPL)
+
+------------------------------------------------------------------------
+
+Instalación y Configuración
+
+   * Para los impacientes:
+
+	user$ su -
+		( introducir contraseña de root )
+        root# su - postgres
+	postgres$ createuser operador -d -A -P
+		( introducir contraseña para el usuario operador )
+	postgres$ createuser nobody -D -A
+	postgres$ exit
+	root# exit
+	user$ tar zxvf evote-1.0.tgz
+	user$ cd evote-1.0
+	user$ vi config
+	user$ ./install.sh --do-all
+	
+	Para instalar datos de ejemplo:
+
+	user$ psql evote -U operador -f lib/ejemplo.sql
+
+	!A jugaaarrrrr!
+
+	Si tienes algún problema con el proceso, tendrás que seguir leyendo :(
+	
+   * Antes de empezar
+
+        Verificar que el servidor apache está correctamente instalado y 
+	configurado. Esto significa que:
+         o Apache es capaz de reconocer y ejecutar scripts PHP en directorios 
+	   de usuario
+         o PHP está compilado para soportar la base de datos que hayamos 
+	   escogido para nuestra instalación
+	 o Si vamos a usar conexiones seguras, verificar que el servidor
+	   soporta el protocolo https sobre directorios de cuentas de usuarios
+
+     	Consultar los respectivos manuales para obtener la información 
+	pertinente
+
+     	El paso siguiente es instalar y configurar el gestor de bases de 
+	datos. La distribución base utiliza PostGreSQL-7.0, por lo que las 
+	explicaciones siguientes se aplican a este RDBMS. Para otros sistemas, 
+	la filosofía es la misma, pero habra que personalizar en cada caso
+
+        1. Instalar y configurar el RDBMS
+        2. Crear los usuarios que Free-Vote necesita:
+             + Un usuario "operador" con permisos plenos
+             + Un usuario "nobody" para acceso desde el web
+          Para crearlos, utilizaremos el comando createuser(1)
+        3. Crear la base de datos:
+
+          createdb evote -U operador
+	
+	4. Incluír en la base de datos el soporte para el lenguage PL/pgSQL. 
+	   Desde el usuario "postgres" ( superuser para la RDBMS ) ejecutar:
+	
+	  createlang -U postgres -L /usr/lib/pgsql plpgsql evote
+
+   * Obtención del paquete Free-Vote
+
+     Una copia actualizada del paquete Free-Vote se puede encontrar en 
+     http://drake.dit.upm.es/free-vote/evote.tgz
+
+   * Extracción de ficheros
+
+     Por motivos de seguridad, NO SE DEBE ejecutar ni instalar Free-Vote como 
+     root. Además, no es necesario.
+
+     El proceso de instalación es el siguiente:
+       1. Escoger un directorio temporal y posicionarse en él
+       2. Verificar que el directorio public_html existe y es accesible desde 
+	  el web
+       3. Descomprimir el programa en el directorio temporal
+
+          tar zxvf evote.tgz
+
+       4. Crear las estructuras de datos de la base de datos
+
+          psql evote -U operador -f lib/database.sql
+
+   * Configuración y Personalización
+
+     o Editar el fichero config
+        Debido a un bug en el programa de backup "pg_dump(1)" necesitaremos 
+	indicar en el fichero de configuración la contraseña del usuario 
+	postgres "operador" para que dicho programa funcione ( no soporta 
+	la opción "-U operador" ). Este parche será eliminado tan pronto 
+	como aparezca una revisión del programa pg_dump
+
+	En el caso de querer usar conexiones seguras, poner la variable
+	USE_HTTPS a 1
+
+   * Definición del administrador de la DB. Temas legales
+
+     o La Ley Orgánica de Tratamiento Automatizado de Datos (LORTAD), 
+	obliga a los poseedores de bases de datos de carácter personal a 
+	dar de alta dicha base de datos, y a hacer claramente visibles 
+	los datos del administrador.  Editaremos pues convenientemente 
+	el fichero "config". Para proceder al registro de la base de datos, 
+	contactaremos con la Agencia de Protección de Datos, rellenando y 
+	enviando los formularios. Si al cabo de un mes no se obtiene 
+	respuesta en contra, se asume la autorización
+
+     o En Free-Vote además, el administrador juega un papel adicional: 
+	Es el único autorizado a realizar modificaciones a la estructura 
+	y contenidos del sistema. Debe ser un usuario registrado con nivel 
+	de prioridad 6 (máximo) Idealmente sólo debería haber un administrador 
+	del sistema.Deberá conocer la contraseña del usuario postgres 
+	"operador",pues sólo él tiene permisos de acceso totales sobre 
+	la base de datos
+
+     o Para registrar en el sistema al administrador ejecutamos el comando 
+       "./install.sh --register-sysop", o bien, si lo queremos realizar de 
+       forma manual, procederemos como sigue:
+
+        + Compilar el programa lib/crypt.c 
+
+          gcc -O2 lib/crypt.c -o crypt -lcrypt
+
+        + Escoger una contraseña, y encriptrarla con este programa
+        + Entrar en el interprete de comandos SQL
+
+          psql evote -U operador
+
+        + Dar de alta al Administrador como usuario registrado en el sistema 
+	  de consultas.
+
+          INSERT INTO usuarios
+              (groupid,passwd,nombre,apellidos,direccion,telefono,email)
+          VALUES
+              (6,'passwd','nombre','apellidos','direccion poblacion','telefono','email');
+
+          "passwd" es el valor encriptado de la contraseña que previamente 
+	  hemos escogido
+
+        + Buscaremos el identificador de usuario asignado por el sistema al 
+	  administrador:
+
+          SELECT userid FROM usuarios WHERE groupid=6;
+
+        + La tupla userid / passwd / email será necesario para todas las 
+	  operciones de administración. Si en lugar de hacer estas operaciones 
+	  a mano se utiliza el programa de instalación, dicho programa genera 
+	  una contraseña automáticamente y nos develve los valores adecuados 
+	  de passwd, email y userid
+
+   * Instalación de ficheros y scripts
+
+	o Compilar la documentación
+	
+	  Evote se distribuye con la documentación en formato Linuxdoc-SGML.
+	  para compilarla, ejecutamos "./install.sh --compile-doc"
+
+        o Instalación de ficheros
+
+          Ejecutamos el comando "./install.sh --install-files" que nos copia 
+	  los ficheros y personaliza el sistema
+
+        o Asignación de tareas en el crontab del usuario
+
+             + Verificar que el usuario está autorizado para ejecutar tareas 
+	       desde cron
+             + Añadir el fichero $HOME/$BACKUPDIR/crontab.evote al fichero 
+	       crontab del usuario.
+
+Está previsto para una futura versión de Free-Vote el agrupar todas estas 
+tareas en el script de instalación. Se admiten voluntarios...
+
+------------------------------------------------------------------------
+Creado por Juan Antonio Martínez <jonsito@teleline.es>
+Ulima actualización: 21-Agosto-2000

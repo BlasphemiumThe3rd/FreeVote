@@ -1,0 +1,58 @@
+   Free-Vote: Un sistema de Voto Electrónico
+------------------------------------------------------------------------
+Este programa, su código y documentación, son Copyright © 2000 de 
+Juan Antonio Martínez Castaño
+
+Free-Vote es distribuído bajo los términos y condiciones de la 
+Licencia Pública General de GNU (GPL)
+
+------------------------------------------------------------------------
+
+Introducción
+
+Free-Vote ha sido diseñado para servir y dar soporte a sistemas de votación 
+electrónica con un nivel razonable de seguridad y fiabilidad
+
+Las características principales de Free-Vote son:
+
+Independiente del navegador
+     	Diseñado completamente en HTML-3.0, se ha omitido expresamente el 
+	uso de javascript, applets, plugins, etc en aras de una mayor 
+	simplicidad y portabilidad
+
+Multiconsulta
+     	Se pueden realizar y monitorizar simultáneamente varias consultas
+
+Configurable
+     	Cada consulta tiene diversos parámetros, definibles por el organizador 
+	de la consulta:
+         o Consulta pública o restringida
+         o Datos de consulta públicos o privados
+         o Periodos de notificación, registro, y votación
+         o Control de información disponible durante la consulta:
+             + Acceso a listas de votantes
+             + Saber si un votante ha votado o no
+             + Datos sobre porcentajes de participacion
+             + Datos sobre resultados parciales de la consulta
+         o Selección y definición de las opciones de voto
+
+Autentificación de votantes
+     	Cada votante recibe al realizar la acreditación una tarjeta de voto, 
+	válida una única vez
+
+Garantía de voto único y secreto
+     	El sistema sólo registra si el usuario ha votado o no, nunca el valor
+	de su voto
+
+Control de acceso
+     	En consultas privadas sólo tienen derecho a voto aquellos votantes 
+	definidos por el organizador.
+
+Puesto que el votante no tiene garantía de que realmente este sistema haga lo que se afirma, existe en todo momento un grupo de usuarios ajeno a este web, que supervisa los contenidos y funcionamiento, dando garantía de "buena fe". Se está considerando la posibilidad de elaborar un sistema de signado electrónico para control de integridad y autenticidad del software
+
+Free-Vote Está basado en PHP-3.0 y PostgreSQL-7.0. Una copia de la última versión del código fuente está disponible vía web en http://drake.dit.upm.es/free-vote/evote.tgz
+
+Free-Vote Se distribuye bajo Licencia GPL.
+
+------------------------------------------------
+
